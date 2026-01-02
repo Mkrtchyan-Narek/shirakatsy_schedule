@@ -7,10 +7,12 @@ export default function App() {
   const [subjectModalOpen, setSubjectModalOpen] = useState(false);
   const [mode, setMode] = useState(1);
   const [selectedPeriod, setSelectedPeriod] = useState(1);
+  const [selectedDay, setSelectedDay] = useState(new Date().getDay()-1);
   document.body.style.backgroundColor = mode ? 'white' : "#121212";
   document.body.style.color = mode ? "black" : "#e0e0e0";
-  const handleSubmitSchedule = async (period) => {
-    setSelectedPeriod(period)
+  const handleSubmitSchedule = (period, day) => {
+    setSelectedPeriod(period);
+    setSelectedDay(day);
   };
   return (
     <Box
@@ -61,13 +63,14 @@ export default function App() {
 </AppBar>
 
       <Container sx={{ mt: 4 }}>
-        <Schedule mode={mode} selectedPeriod={selectedPeriod}></Schedule>
+        <Schedule mode={mode} selectedPeriod={selectedPeriod} selectedDay={selectedDay}></Schedule>
       </Container>
       <SubjectModalDialog
               open={subjectModalOpen}
               onClose={() => setSubjectModalOpen(false)}
               selectedPeriod={selectedPeriod}
               handleSubmit={handleSubmitSchedule}
+              selectedDay={selectedDay}
             />
     </Box>
   );

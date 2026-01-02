@@ -6,7 +6,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { useEffect, useState } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, getDocs, collection } from 'firebase/firestore';
 import { db } from '../firebase.js';
 
 const periodLabels = {
@@ -19,20 +19,19 @@ const periodLabels = {
 
 const periods = [1, 2, 3, 4, 5];
 
-export default function ScheduleTable({ mode, selectedPeriod }) {
+export default function ScheduleTable({ mode, selectedPeriod, selectedDay }) {
   const periodsToShow = selectedPeriod ? [selectedPeriod] : periods;
-  const [data, setData] = useState([]);
+  const [data, setData] = useState([[], [], [], [], []]);
     useEffect(() => {
         (async function getData() {
-            const docRef = doc(db, "Schedule", "demo");
-            const docSnap = await getDoc(docRef);
-            const scheduleJSON = docSnap.data().schedule;
-            const schedule = JSON.parse(scheduleJSON);
-            setData(schedule);
+            const querySnapshot = await getDocs(collection(db, 'Schedule'));
+            const items = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            setData(items.map((x) => JSON.parse(x.schedule)));
         })()
     }, [])
+
     const schedule = Object.values(
-    data.reduce((acc, { room, period, class: teacher }) => {
+    data[selectedDay].reduce((acc, { room, period, class: teacher }) => {
         if (!acc[room]) {
         acc[room] = { room, periods: {} };
         }
