@@ -12,7 +12,6 @@ import {
 } from '@mui/material';
 
 const PERIODS = [0, 1, 2, 3, 4, 5];
-
 const PERIOD_LABELS = {
   0: 'All',
   1: '1–2',
@@ -21,21 +20,21 @@ const PERIOD_LABELS = {
   4: '7–8',
   5: '9–10',
 };
-
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
 const selectStyles = {
   mt: 2,
-  mb: 3,
+  mb: 2,
   backgroundColor: '#fff',
-  boxShadow: '0 6px 18px rgba(0,0,0,0.2)',
+  boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+  borderRadius: 2,
   '& .MuiInputLabel-root': {
     color: '#555',
-    fontSize: 18,
+    fontSize: 16,
   },
   '& .MuiSelect-select': {
-    padding: '18px 24px',
-    fontSize: 18,
+    padding: '16px 20px',
+    fontSize: 16,
     fontWeight: 500,
   },
   '& .MuiOutlinedInput-notchedOutline': {
@@ -47,17 +46,11 @@ const selectStyles = {
   },
   '& .MuiSelect-icon': {
     color: '#26b8b8',
-    fontSize: 32,
+    fontSize: 28,
   },
 };
 
-export default function ModalDialog({
-  open,
-  onClose,
-  handleSubmit,
-  selectedPeriod,
-  selectedDay,
-}) {
+export default function ModalDialog({ open, onClose, handleSubmit, selectedPeriod, selectedDay }) {
   const [period, setPeriod] = useState(selectedPeriod);
   const [day, setDay] = useState(selectedDay);
 
@@ -74,8 +67,16 @@ export default function ModalDialog({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ fontSize: 18 }}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+      PaperProps={{
+        sx: { borderRadius: 3},
+      }}
+    >
+      <DialogTitle sx={{ fontWeight: 600, fontSize: 18 }}>
         Select period and day
       </DialogTitle>
 
@@ -87,7 +88,7 @@ export default function ModalDialog({
             label="Period"
             onChange={(e) => setPeriod(e.target.value)}
           >
-            {PERIODS.map(p => (
+            {PERIODS.map((p) => (
               <MenuItem key={p} value={p}>
                 {PERIOD_LABELS[p]}
               </MenuItem>
@@ -111,19 +112,23 @@ export default function ModalDialog({
         </FormControl>
       </DialogContent>
 
-      <DialogActions>
+      <DialogActions sx={{ px: 3, pb: 2 }}>
         <Button
-          variant="contained"
           onClick={handleSave}
+          variant="contained"
           sx={{
-            backgroundColor: '#26b8b8',
-            '&:hover': { backgroundColor: '#1ea0a0' },
+            borderRadius: 2,
+            px: 3,
+            bgcolor: '#26b8b8',
+            '&:hover': { bgcolor: '#1ea0a0' },
           }}
         >
           Save
         </Button>
-
-        <Button onClick={onClose}>
+        <Button
+          onClick={onClose}
+          sx={{ borderRadius: 2, bgcolor: '#ffffff' }}
+        >
           Cancel
         </Button>
       </DialogActions>
