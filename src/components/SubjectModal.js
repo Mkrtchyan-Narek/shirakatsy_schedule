@@ -1,113 +1,110 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  Box,
-  Button,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Typography,
+  Button,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
 } from '@mui/material';
 
-export default function ModalDialog({ handleSubmit, open, onClose, selectedPeriod, selectedDay }) {
+const PERIODS = [0, 1, 2, 3, 4, 5];
+
+const PERIOD_LABELS = {
+  0: 'All',
+  1: '1–2',
+  2: '3–4',
+  3: '5–6',
+  4: '7–8',
+  5: '9–10',
+};
+
+const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
+const selectStyles = {
+  mt: 2,
+  mb: 3,
+  backgroundColor: '#fff',
+  boxShadow: '0 6px 18px rgba(0,0,0,0.2)',
+  '& .MuiInputLabel-root': {
+    color: '#555',
+    fontSize: 18,
+  },
+  '& .MuiSelect-select': {
+    padding: '18px 24px',
+    fontSize: 18,
+    fontWeight: 500,
+  },
+  '& .MuiOutlinedInput-notchedOutline': {
+    borderColor: '#b2dfdb',
+    borderWidth: 2,
+  },
+  '&:hover .MuiOutlinedInput-notchedOutline': {
+    borderColor: '#26b8b8',
+  },
+  '& .MuiSelect-icon': {
+    color: '#26b8b8',
+    fontSize: 32,
+  },
+};
+
+export default function ModalDialog({
+  open,
+  onClose,
+  handleSubmit,
+  selectedPeriod,
+  selectedDay,
+}) {
   const [period, setPeriod] = useState(selectedPeriod);
   const [day, setDay] = useState(selectedDay);
 
-  const periods = [0, 1, 2, 3, 4, 5];
-  const periodLabels = { 0: 'All', 1: '1–2', 2: '3–4', 3: '5–6', 4: '7–8', 5: '9-10' };
-
   useEffect(() => {
-    setPeriod(selectedPeriod);
-    setDay(selectedDay);
-  }, [open]);
+    if (open) {
+      setPeriod(selectedPeriod);
+      setDay(selectedDay);
+    }
+  }, [open, selectedPeriod, selectedDay]);
 
-  const handlePeriodChange = (event) => {
-    setPeriod(event.target.value);
+  const handleSave = () => {
+    handleSubmit(period, day);
+    onClose();
   };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle variant="h6" fontSize={18}>
-          Select a specific period or day
+      <DialogTitle sx={{ fontSize: 18 }}>
+        Select period and day
       </DialogTitle>
 
       <DialogContent>
-        <FormControl
-          fullWidth
-          sx={{
-            mt: 2,
-            mb: 3,
-            backgroundColor: '#ffffff',
-            boxShadow: '0 6px 18px rgba(0,0,0,0.2)',
-            '& .MuiInputLabel-root': {
-              color: '#555',
-              fontSize: 18,
-            },
-            '& .MuiSelect-select': {
-              padding: '18px 24px',
-              fontSize: 18,
-              fontWeight: 500,
-            },
-            '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#b2dfdb',
-              borderWidth: 2,
-            },
-            '&:hover .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#26b8b8',
-            },
-            '& .MuiSelect-icon': {
-              color: '#26b8b8',
-              fontSize: 32,
-            },
-          }}
-        >
+        <FormControl fullWidth sx={selectStyles}>
           <InputLabel>Period</InputLabel>
-          <Select value={period} label="Period" onChange={handlePeriodChange}>
-            {periods.map((p) => (
+          <Select
+            value={period}
+            label="Period"
+            onChange={(e) => setPeriod(e.target.value)}
+          >
+            {PERIODS.map(p => (
               <MenuItem key={p} value={p}>
-                {periodLabels[p]}
+                {PERIOD_LABELS[p]}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
-        <FormControl
-          fullWidth
-          sx={{
-            mt: 2,
-            mb: 3,
-            backgroundColor: '#ffffff',
-            boxShadow: '0 6px 18px rgba(0,0,0,0.2)',
-            '& .MuiInputLabel-root': {
-              color: '#555',
-              fontSize: 18,
-            },
-            '& .MuiSelect-select': {
-              padding: '18px 24px',
-              fontSize: 18,
-              fontWeight: 500,
-            },
-            '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#b2dfdb',
-              borderWidth: 2,
-            },
-            '&:hover .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#26b8b8',
-            },
-            '& .MuiSelect-icon': {
-              color: '#26b8b8',
-              fontSize: 32,
-            },
-          }}
-        >
+
+        <FormControl fullWidth sx={selectStyles}>
           <InputLabel>Day</InputLabel>
-          <Select value={day} label="Change if needed" onChange={(event) => setDay(event.target.value)}>
-            {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map((p, i) => (
-              <MenuItem key={p} value={i}>
-                {p}
+          <Select
+            value={day}
+            label="Day"
+            onChange={(e) => setDay(e.target.value)}
+          >
+            {DAYS.map((label, index) => (
+              <MenuItem key={label} value={index}>
+                {label}
               </MenuItem>
             ))}
           </Select>
@@ -116,8 +113,8 @@ export default function ModalDialog({ handleSubmit, open, onClose, selectedPerio
 
       <DialogActions>
         <Button
-          onClick={() => {handleSubmit(period, day); onClose()}}
           variant="contained"
+          onClick={handleSave}
           sx={{
             backgroundColor: '#26b8b8',
             '&:hover': { backgroundColor: '#1ea0a0' },
@@ -125,7 +122,8 @@ export default function ModalDialog({ handleSubmit, open, onClose, selectedPerio
         >
           Save
         </Button>
-        <Button onClick={onClose} sx={{ backgroundColor: '#ffffff' }}>
+
+        <Button onClick={onClose}>
           Cancel
         </Button>
       </DialogActions>
