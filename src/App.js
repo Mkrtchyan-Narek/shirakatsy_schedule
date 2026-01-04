@@ -4,9 +4,10 @@ import Schedule from './components/Schedule';
 import SubjectModalDialog from './components/SubjectModal';
 
 export default function App() {
+  const initialDay = ((new Date().getDay() - 1) == 5 || (new Date().getDay() - 1) == -1) ? 0 : new Date().getDay() - 1;
   const [subjectModalOpen, setSubjectModalOpen] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState(1);
-  const [selectedDay, setSelectedDay] = useState(new Date().getDay() - 1);
+  const [selectedDay, setSelectedDay] = useState(initialDay);
 
   const handleSubmitSchedule = (period, day) => {
     setSelectedPeriod(period);
